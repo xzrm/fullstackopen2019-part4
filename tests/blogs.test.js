@@ -77,6 +77,34 @@ describe('favourite blog', () => {
   test('of a bigger list is calculated right', () => {
     expect(listHelper.favoriteBlog(blogs)).toEqual(blogs[2])
   })
+
+})
+
+describe('largest amount of blogs', () => {
+  test('of empty list is zero', () => {
+    expect(listHelper.mostBlogs([])).toEqual(undefined)
+  })
+
+  test('of a bigger list is calculated right', () => {
+    expect(listHelper.mostBlogs(blogs)).toEqual({
+      author: 'Robert C. Martin',
+      blogs: 3
+    })
+  })
+})
+
+
+describe('largest amount of likes', () => {
+  test('of empty list is zero', () => {
+    expect(listHelper.mostLikes([])).toEqual(undefined)
+  })
+
+  test('of a bigger list is calculated right', () => {
+    expect(listHelper.mostLikes(blogs)).toEqual({
+      author: 'Edsger W. Dijkstra',
+      likes: 17
+    })
+  })
 })
 
 

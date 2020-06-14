@@ -13,7 +13,8 @@ beforeEach(async () => {
   const blogObjects = helper.initialBlogs
     .map(blog => new Blog(blog))
 
-  const promiseArray = blogObjects.map(blog => blog.save())
+  const promiseArray = blogObjects
+    .map(blog => blog.save())
   await Promise.all(promiseArray)
 })
 
@@ -72,6 +73,9 @@ describe('POST request blogs test', () => {
 
     const response = await api.get('/api/blogs')
     expect(response.body.length).toBe(helper.initialBlogs.length + 1)
+
+    const titles = response.body.map(blog => blog.title)
+    expect(titles).toContain('Canonical string reduction')
   })
 
   test('missing likes', async () => {
@@ -82,6 +86,7 @@ describe('POST request blogs test', () => {
     }
     const response = await api.post('/api/blogs').send(newBlogWithoutLikes)
     expect(response.body.likes).toBe(0)
+
   })
   test('missing title or url', async () => {
     const missingUrl = {
@@ -115,7 +120,7 @@ describe('DELETE request blog test', () => {
 describe('when there is initially one user at db', () => {
   beforeEach(async () => {
     await User.deleteMany({})
-    const user = new User({ username: 'root', password: 'sekret' })
+    const user = new User({ username: 'root', password: 'sekret' }) // <-- differences
     await user.save()
   })
 
