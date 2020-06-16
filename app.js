@@ -3,9 +3,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
 const cors = require('cors')
-const blogsRouter = require('./controllers/blogs') //!!!
-
-
+const blogsRouter = require('./controllers/blogs')
 const mongoose = require('mongoose')
 const middleware = require('./utils/middleware')
 const usersRouter = require('./controllers/users')

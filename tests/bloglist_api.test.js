@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcryptjs')
 const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
@@ -55,7 +56,28 @@ describe('GET request blogs tests', () => {
   })
 })
 
+
+
 describe('POST request blogs test', () => {
+  /*  Tests which require user authentication do not work yet.
+  .set('Authorization', `bearer ${token}`) does not work. To be finished*/
+  var token = null
+
+  beforeEach(async () => {
+    await User.deleteMany({})
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'root', passwordHash })
+    await user.save()
+
+
+    const response = await api
+      .post('/api/login')
+      .send({ username: 'root', password: 'sekret' })
+
+    token = response.body.token
+  })
+
+
   test('successful creating a new blog post', async () => {
 
     const newBlog = {
@@ -67,8 +89,9 @@ describe('POST request blogs test', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
       .send(newBlog)
-      .expect(200)
+      .expect(201)
       .expect('Content-Type', /application\/json/)
 
     const response = await api.get('/api/blogs')
@@ -120,7 +143,8 @@ describe('DELETE request blog test', () => {
 describe('when there is initially one user at db', () => {
   beforeEach(async () => {
     await User.deleteMany({})
-    const user = new User({ username: 'root', password: 'sekret' }) // <-- differences
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const user = new User({ username: 'root', passwordHash })
     await user.save()
   })
 
